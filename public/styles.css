@@ -36,14 +36,15 @@ body.dark {
 }
 
 html {
-  scroll-behavior: smooth;
   scroll-padding-top: 4.5rem;
   -webkit-text-size-adjust: 100%;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
+/* Smooth scrolling for mouse and touch only: when tabbing with the keyboard, the page jumps
+   straight to the focused element. */
+@media (prefers-reduced-motion: no-preference) {
+  html:not(:has(:focus-visible)) {
+    scroll-behavior: smooth;
   }
 }
 
