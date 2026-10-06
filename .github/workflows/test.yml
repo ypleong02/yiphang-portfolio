@@ -1,0 +1,47 @@
+name: Functional tests
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  functional-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Checkout tests
+        uses: actions/checkout@v5
+        with:
+          repository: ypleong02/yiphang-portfolio-tests
+          path: tests
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 20
+      - name: Install test dependencies
+        working-directory: tests
+        run: npm ci
+      - name: Install Playwright Chromium
+        working-directory: tests
+        run: npx playwright install --with-deps chromium
+      - name: Serve public/
+        run: python -m http.server 8000 --directory public &
+      - name: Wait for the site
+        run: |
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent --output /dev/null http://localhost:8000; then
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Site did not respond on port 8000 within 30 seconds" >&2
+          exit 1
+      - name: Run tests
+        working-directory: tests
+        env:
+          BASE_URL: http://localhost:8000
+        run: npx playwright test
