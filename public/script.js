@@ -3,6 +3,8 @@
 
   const USER = 'ypleong02';
   const API_URL = `https://api.github.com/users/${USER}/repos?sort=updated&per_page=12`;
+  // Only these repos are shown; add a name here to list another one.
+  const SHOWN_REPOS = ['yiphang-portfolio'];
 
   const list = document.getElementById('repo-list');
   const status = document.getElementById('repos-status');
@@ -50,8 +52,9 @@
       });
       if (!response.ok) throw new Error(`GitHub API responded with ${response.status}`);
 
-      const repos = await response.json();
-      if (!Array.isArray(repos) || repos.length === 0) {
+      const data = await response.json();
+      const repos = Array.isArray(data) ? data.filter((repo) => SHOWN_REPOS.includes(repo.name)) : [];
+      if (repos.length === 0) {
         showMessage('No public repositories to show yet.');
         return;
       }
