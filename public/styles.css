@@ -1,5 +1,5 @@
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
   --bg: #ffffff;
   --surface: #f5f6f8;
   --text: #1a1f2b;
@@ -12,16 +12,19 @@
   --gutter: 1.25rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0f1218;
-    --surface: #181c25;
-    --text: #e8ebf1;
-    --muted: #a0a8b8;
-    --border: #2a303c;
-    --accent: #8ab4ff;
-    --accent-contrast: #0f1218;
-  }
+/* Dark theme: theme.js sets the class on <body> (system setting first, then the nav toggle). */
+body.dark {
+  --bg: #0f1218;
+  --surface: #181c25;
+  --text: #e8ebf1;
+  --muted: #a0a8b8;
+  --border: #2a303c;
+  --accent: #8ab4ff;
+  --accent-contrast: #0f1218;
+}
+
+:root:has(body.dark) {
+  color-scheme: dark;
 }
 
 *,
@@ -130,7 +133,29 @@ a:focus-visible {
 .site-nav ul {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 0.25rem 1.1rem;
+}
+
+.theme-toggle {
+  padding: 0.2rem 0.75rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 
 .site-nav a {
